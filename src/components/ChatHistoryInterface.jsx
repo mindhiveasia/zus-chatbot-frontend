@@ -24,8 +24,13 @@ const ChatHistoryInterface = () => {
   const fetchMessages = async (param) => {
     try {
       setIsLoading(true);
+      console.log(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`)
       const response = await fetch(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
+
+      console.log(response)
       const result = await response.json();
+
+      console.log(result)
 
       if (result.status === 'success') {
         const chatData = JSON.parse(result.data);
