@@ -1,0 +1,75 @@
+/* src/index.css or src/App.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Set a base background color and font */
+body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+  }
+  
+  /* Chat container styles */
+  nav {
+    @apply shadow-md bg-white sticky top-0 z-10;
+  }
+  
+  .flex-1 {
+    @apply overflow-y-auto;
+  }
+  
+  /* Chat bubbles styling */
+  .max-w-[70%] {
+
+  }
+  
+  .bg-gray-100 {
+    @apply text-gray-800 border border-gray-200 shadow-sm; /* Apply other styles here */
+  }
+  
+  .bg-blue-500 {
+    /* @apply bg-blue-500 text-white; */
+  }
+
+  .chat-bubble-blue {
+    @apply bg-blue-500 text-white; /* Apply the desired styles here */
+  }
+  
+
+  /* Loading indicator */
+  .loader {
+    @apply animate-spin text-gray-400;
+  }
+  
+  /* Responsive logo in nav bar */
+  img.h-10.w-10 {
+    @apply rounded-full;
+  }
+  
+  
+  /* Handle scrollbar for the chat window */
+  .flex-1::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .flex-1::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-lg;
+  }
+  
+  .flex-1::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+  
+  /* Responsive handling for image and video attachments */
+  img {
+    @apply max-w-full rounded;
+  }
+  
+  .relative.pt-[56.25%] iframe {
+    @apply w-full h-full rounded;
+  }
+  
+  /* Audio player styling */
+  audio {
+    @apply w-full;
+  }
