@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { MessageCircle, Loader } from 'lucide-react';
+import { MessageCircle, Loader, X } from 'lucide-react';
 
 const ChatHistoryInterface = () => {
   const { param1 } = useParams();
   const [messages, setMessages] = useState([]);
+  const [chatImages, setChatImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // State for the selected image in the modal
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -19,22 +21,25 @@ const ChatHistoryInterface = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, chatImages]);
 
   const fetchMessages = async (param) => {
     try {
       setIsLoading(true);
-      console.log(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`)
+      console.log(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
       const response = await fetch(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
 
-      console.log(response)
+      console.log(response);
       const result = await response.json();
 
-      console.log(result)
+      console.log(result);
 
       if (result.status === 'success') {
         const chatData = JSON.parse(result.data);
+
+        // Set the chat transcript and images
         setMessages(chatData.chat_transcript);
+        setChatImages(chatData.chat_images || []); // Set chat_images, default to empty array if not present
       } else {
         setError(result.message || 'Failed to fetch messages');
       }
@@ -100,11 +105,51 @@ const ChatHistoryInterface = () => {
     );
   };
 
+  const ImageBubble = ({ image }) => {
+    return (
+      <div className="flex justify-start mb-4"> {/* Align to the left */}
+        <div className="max-w-[70%] bg-gray-100 rounded-lg p-3">
+          <img
+            src={image}
+            alt="Chat Image"
+            className="w-full h-auto rounded-lg cursor-pointer"
+            onClick={() => setSelectedImage(image)} // Open modal on click
+          />
+        </div>
+      </div>
+    );
+  };
+
   const DateLabel = ({ date }) => (
     <div className="flex items-center justify-center my-4">
       <span className="bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-1 rounded-lg">{formatDate(date)}</span>
     </div>
   );
+
+  const ImageModal = () => {
+    if (!selectedImage) return null;
+
+    return (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50"
+        onClick={() => setSelectedImage(null)} // Close modal on click outside
+      >
+        <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+          <img
+            src={selectedImage}
+            alt="Enlarged Chat Image"
+            className="max-w-full max-h-full object-contain rounded-lg" /* Ensure image fits within the modal */
+          />
+          <button
+            className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-lg"
+            onClick={() => setSelectedImage(null)} // Close modal on button click
+          >
+            <X className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col h-screen bg-white">
@@ -138,11 +183,15 @@ const ChatHistoryInterface = () => {
                   <MessageBubble key={index} message={item.message} />
                 )
               )}
-              <div ref={messagesEndRef} />
+              {chatImages.map((image, index) => (
+                <ImageBubble key={`image-${index}`} image={image} />
+              ))}
+              <div className="mb-8" ref={messagesEndRef} /> {/* Add margin at the end */}
             </>
           )}
         </div>
       </div>
+      <ImageModal />
     </div>
   );
 };
