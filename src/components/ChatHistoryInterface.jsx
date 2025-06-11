@@ -27,7 +27,9 @@ const ChatHistoryInterface = () => {
     try {
       setIsLoading(true);
       console.log(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`, {
+        mode: 'no-cors'
+      });
 
       console.log(response);
       const result = await response.json();
