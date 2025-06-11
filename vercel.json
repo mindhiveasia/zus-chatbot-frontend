@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/chat_orders/:path*",
+      "destination": "https://zus-chatbot-api.mindhive.asia/chat_orders/:path*"
+    }
+  ]
+} 
