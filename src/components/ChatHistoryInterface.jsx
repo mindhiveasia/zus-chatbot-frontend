@@ -27,9 +27,7 @@ const ChatHistoryInterface = () => {
     try {
       setIsLoading(true);
       // Use the Vercel proxy endpoint to avoid CORS issues
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? `/api/chat_orders/chat_history/${param}`
-        : `${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`;
+      const apiUrl = `${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`;
       
       console.log(apiUrl);
       const response = await fetch(apiUrl, {
