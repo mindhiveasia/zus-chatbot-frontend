@@ -26,12 +26,25 @@ const ChatHistoryInterface = () => {
   const fetchMessages = async (param) => {
     try {
       setIsLoading(true);
-      console.log(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`, {
-        mode: 'no-cors'
+      // Use the Vercel proxy endpoint to avoid CORS issues
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? `/api/chat_orders/chat_history/${param}`
+        : `${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`;
+      
+      console.log(apiUrl);
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       console.log(response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
 
       console.log(result);
@@ -46,7 +59,12 @@ const ChatHistoryInterface = () => {
         setError(result.message || 'Failed to fetch messages');
       }
     } catch (err) {
-      setError('An error occurred while fetching messages');
+      console.error('Fetch error:', err);
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        setError('CORS error: Unable to connect to the API. Please check if the API allows cross-origin requests from your domain.');
+      } else {
+        setError(`An error occurred while fetching messages: ${err.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -166,7 +184,7 @@ const ChatHistoryInterface = () => {
         </span>
       </nav>
       <div className="flex-1 overflow-y-auto p-4 flex justify-center bg-gray-50">
-        <div className="w-full lg:max-w-[50%] bg-white shadow-sm rounded-lg">
+        <div className="w-full lg:max-w-[60%] h-full bg-white shadow-sm rounded-lg px-8 py-8 overflow-y-auto">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <Loader className="w-8 h-8 animate-spin text-gray-400" />
