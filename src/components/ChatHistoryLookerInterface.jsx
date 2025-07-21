@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { MessageCircle, Loader, X } from 'lucide-react';
 
-const ChatHistoryInterface = () => {
-  const { param1 } = useParams();
+const ChatHistoryLookerInterface = () => {
+  const { chat_id } = useParams();
   const [messages, setMessages] = useState([]);
   const [chatImages, setChatImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,19 +16,21 @@ const ChatHistoryInterface = () => {
   };
 
   useEffect(() => {
-    fetchMessages(param1);
-  }, [param1]);
+    fetchMessages(chat_id);
+  }, [chat_id]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, chatImages]);
 
-  const fetchMessages = async (param) => {
+  const fetchMessages = async (chatId) => {
     try {
       setIsLoading(true);
       // Use the Vercel proxy endpoint to avoid CORS issues in production
       // For local development, use the direct API URL
-      const apiUrl = `${process.env.REACT_APP_API_URL}/chat_orders/chat_history/${param}`;
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? `/api/chat_orders/chat_history/looker_studio/${chatId}`
+        : `${process.env.REACT_APP_API_URL}/chat_orders/chat_history/looker_studio/${chatId}`;
       
       console.log(apiUrl);
       const response = await fetch(apiUrl, {
@@ -174,12 +176,12 @@ const ChatHistoryInterface = () => {
     <div className="flex flex-col h-screen bg-white">
       <nav className="flex items-center px-4 py-2 bg-white border-b">
         <img
-          src="https://zuscoffee.com/wp-content/uploads/2022/03/zus_logo"
+          src="https://zuscoffee.com/wp-content/uploads/2022/03/zus_logo.png"
           alt="Brand Logo"
           className="h-10 w-10"
         />
         <span className="ml-5 text-lg">
-          <strong>ZUS Coffee</strong> | <small>Chatbot History</small>
+          <strong>ZUS Coffee</strong> | <small>Chatbot History - Looker Studio</small>
         </span>
       </nav>
       <div className="flex-1 overflow-y-auto p-4 flex justify-center bg-gray-50">
@@ -215,4 +217,4 @@ const ChatHistoryInterface = () => {
   );
 };
 
-export default ChatHistoryInterface;
+export default ChatHistoryLookerInterface; 
