@@ -176,7 +176,7 @@ const ChatHistoryLookerInterface = () => {
     <div className="flex flex-col h-screen bg-white">
       <nav className="flex items-center px-4 py-2 bg-white border-b">
         <img
-          src="https://zuscoffee.com/wp-content/uploads/2022/03/zus_logo.png"
+          src="https://zus-chatbot.s3.ap-southeast-1.amazonaws.com/assets/zus-app-logo-2025-256-256.png"
           alt="Brand Logo"
           className="h-10 w-10"
         />
